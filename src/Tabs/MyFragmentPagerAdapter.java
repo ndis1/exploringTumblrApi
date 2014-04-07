@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter{
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
-   final int PAGE_COUNT = 4;
+   final int PAGE_COUNT = 5;
 
    /** Constructor of the class */
    public MyFragmentPagerAdapter(FragmentManager fm) {
@@ -36,8 +36,11 @@ public class MyFragmentPagerAdapter extends FragmentPagerAdapter{
 		   case 2:{
 		       myFragment = new ImageFragment();
 		       break;
-		   }default :{
+		   }case 3 :{
 			   myFragment = new LikeFragment();
+			   break;
+		   }default :{
+			   myFragment = new NoteFragment();
 		   }
 	   }
        myFragment.setArguments(data);
