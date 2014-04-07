@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry exported="true" kind="lib" path="hoot.jar"/>
+	<classpathentry exported="true" kind="lib" path="jumblr-0.0.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="scribe-1.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="gson-2.2.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="google-api-client-1.4.1-beta.jar"/>
+	<classpathentry exported="true" kind="lib" path="httpclient-4.0.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="jackson-core-asl-1.6.7.jar"/>
+	<classpathentry exported="true" kind="lib" path="guava-16.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="commons-lang3-3.0.jar"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>
