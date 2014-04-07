@@ -16,6 +16,8 @@ import Tabs.AllFragment.OnAllSelectedListener;
 import Tabs.BaseFragment.EndlessScroller;
 import Tabs.ImageFragment;
 import Tabs.ImageFragment.OnImageFragmentSelectedListener;
+import Tabs.LikeFragment;
+import Tabs.LikeFragment.OnLikeFragmentSelectedListener;
 import Tabs.MyFragmentPagerAdapter;
 import Tabs.TextFragment;
 import Tabs.TextFragment.OnTextFragmentSelectedListener;
@@ -52,15 +54,17 @@ import com.tumblr.jumblr.types.Post;
 import com.tumblr.jumblr.types.Video;
 import com.tumblr.jumblr.types.VideoPost;
 
-public class MainActivity extends SherlockFragmentActivity implements OnImageFragmentSelectedListener,OnTextFragmentSelectedListener,OnAllSelectedListener,EndlessScroller {
+public class MainActivity extends SherlockFragmentActivity implements OnImageFragmentSelectedListener,OnTextFragmentSelectedListener,OnAllSelectedListener,OnLikeFragmentSelectedListener,EndlessScroller {
 	private boolean adapterTaskSet;
     private static final String TAG = "TumblrDemo";
-    private  String[] labels = {"All", "Video", "Images"};
+    private  String[] labels = {"All", "Video", "Images", "Liked"};
     private ViewPager pager = null;
-    private static LazyAdapterAssignsImageLayoutorTextLayoutBasedType allAdapter;
     private int offset =0;
     private static LazyAdapterAssignsImageLayoutorTextLayoutBasedType textAdapter;
     private static LazyAdapterAssignsImageLayoutorTextLayoutBasedType imageAdapter;
+    private static LazyAdapterAssignsImageLayoutorTextLayoutBasedType likeAdapter;
+    private static LazyAdapterAssignsImageLayoutorTextLayoutBasedType allAdapter;
+
     private MyFragmentPagerAdapter pagerAdapter;
     private String query;
     private Activity con;
@@ -70,6 +74,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
     private ArrayList<Row> rowsImg; 
     private ArrayList<Row> rowsAll;
     private ArrayList<Row> rowsText;
+    private ArrayList<Row> rowsLike;
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +87,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 		rowsAll = new ArrayList<Row>();
 		rowsText = new ArrayList<Row>();
 		rowsImg = new ArrayList<Row>();
+		rowsLike = new ArrayList<Row>();
+
 		prefs = PreferenceManager.getDefaultSharedPreferences(con);
 		String[] tokens = new SharedPreferencesCredentialStore(prefs).read();
 		if(tokens != null && tokens[0] != ""){
@@ -158,6 +166,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 				LayoutInflater li = LayoutInflater.from(con);
 				List<Post> posts = blog.posts(options);
 				for (Post p : posts){
+					
 					if(p != null){
 						if(p.getType().equals("photo")){
 							Log.w(TAG, "some photo");
@@ -178,6 +187,9 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 									ImageRow newListElement = new ImageRow(li,smallestPhoto.getUrl(),imgLoader);
 		                            rowsAll.add(newListElement);
 		                            rowsImg.add(newListElement);
+		                            if(p.isLiked()){
+		                            	rowsLike.add(newListElement);
+		                            }
 								}
 							}
 						}
@@ -196,10 +208,16 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 								VideoRow newListElement = new VideoRow(li,vp.getThumbnailUrl(),smallestVideo.getEmbedCode(),imgLoader);
 		                        rowsAll.add(newListElement);		
 		                        rowsText.add(newListElement);
+		                        if(p.isLiked()){
+	                            	rowsLike.add(newListElement);
+	                            }
 							}
 	                    }else{
 							TextRow newListElement = new TextRow(li,p.getType());
 	                        rowsAll.add(newListElement);		
+	                        if(p.isLiked()){
+                            	rowsLike.add(newListElement);
+                            }
 	                    }
 					}
 				}
@@ -207,6 +225,8 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
     	            allAdapter = new LazyAdapterAssignsImageLayoutorTextLayoutBasedType(MainActivity.this, rowsAll,imgLoader);
     	            textAdapter = new LazyAdapterAssignsImageLayoutorTextLayoutBasedType(MainActivity.this, rowsText,imgLoader);
     	            imageAdapter = new LazyAdapterAssignsImageLayoutorTextLayoutBasedType(MainActivity.this, rowsImg,imgLoader);
+    	            likeAdapter = new LazyAdapterAssignsImageLayoutorTextLayoutBasedType(MainActivity.this, rowsLike,imgLoader);
+
 	    			new SetAdapterTask().execute();
 	    			adapterTaskSet = true;
 	    		}else{
@@ -216,6 +236,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 	    		    			allAdapter.notifyDataSetChanged();
 	    		    			textAdapter.notifyDataSetChanged();
 	    		    			imageAdapter.notifyDataSetChanged();
+	    		    			likeAdapter.notifyDataSetChanged();
 	    			    }
 	    			});
 	    		}
@@ -266,8 +287,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 			}
         };
 
-        // Add 3 tabs, specifying the tab's text and TabListener
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             actionBar.addTab(
                     actionBar.newTab()
                             .setText(labels[i])
@@ -308,6 +328,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 		    	rowsAll.clear();
 		    	rowsImg.clear();
 		    	rowsText.clear();
+		    	rowsLike.clear();
 				offset = 0;
 				new GetFromString(query).execute();
 		    }
@@ -332,6 +353,7 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 		    	rowsAll.clear();
 		    	rowsImg.clear();
 		    	rowsText.clear();
+		    	rowsLike.clear();
 				offset = 0;
 				new GetFromString(query).execute();
 		    }
@@ -368,11 +390,20 @@ public class MainActivity extends SherlockFragmentActivity implements OnImageFra
 			}
 		}
 	}
-	
+	@Override
+	public void onLikeSelected(int position) {
+		if(pagerAdapter != null){
+			LikeFragment articleFrag = (LikeFragment) pagerAdapter.getRegisteredFragment(position);
+			if(articleFrag != null){
+				articleFrag.setAd(likeAdapter);
+			}
+		}		
+	}
 	@Override
 	public void onBottomReached(int position) {
 		Log.w(TAG, "onbottomreached called");
 		offset += 10;
 		new GetFromString(query).execute();
 	}
+	
 }
