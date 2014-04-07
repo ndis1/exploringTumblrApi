@@ -16,6 +16,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.actionbarsherlock.app.SherlockActivity;
 import com.google.api.client.auth.oauth.OAuthAuthorizeTemporaryTokenUrl;
 import com.google.api.client.auth.oauth.OAuthCredentialsResponse;
 import com.google.api.client.auth.oauth.OAuthGetAccessToken;
@@ -25,7 +26,7 @@ import com.google.api.client.http.apache.ApacheHttpTransport;
 
 
 @SuppressLint("SetJavaScriptEnabled")
-public class OAuthAccessTokenActivity extends Activity {
+public class OAuthAccessTokenActivity extends SherlockActivity {
 
 	final String TAG = getClass().getName();
 	

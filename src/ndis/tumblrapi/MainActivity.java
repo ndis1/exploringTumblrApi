@@ -19,8 +19,6 @@ import Tabs.ImageFragment.OnImageFragmentSelectedListener;
 import Tabs.MyFragmentPagerAdapter;
 import Tabs.TextFragment;
 import Tabs.TextFragment.OnTextFragmentSelectedListener;
-import android.app.ActionBar;
-import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -30,17 +28,21 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.ActionBar.Tab;
+import com.actionbarsherlock.app.ActionBar.TabListener;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tumblr.jumblr.JumblrClient;
 import com.tumblr.jumblr.types.Blog;
 import com.tumblr.jumblr.types.Photo;
@@ -50,7 +52,7 @@ import com.tumblr.jumblr.types.Post;
 import com.tumblr.jumblr.types.Video;
 import com.tumblr.jumblr.types.VideoPost;
 
-public class MainActivity extends FragmentActivity implements OnImageFragmentSelectedListener,OnTextFragmentSelectedListener,OnAllSelectedListener,EndlessScroller {
+public class MainActivity extends SherlockFragmentActivity implements OnImageFragmentSelectedListener,OnTextFragmentSelectedListener,OnAllSelectedListener,EndlessScroller {
 	private boolean adapterTaskSet;
     private static final String TAG = "TumblrDemo";
     private  String[] labels = {"All", "Video", "Images"};
@@ -236,31 +238,31 @@ public class MainActivity extends FragmentActivity implements OnImageFragmentSel
                 new ViewPager.SimpleOnPageChangeListener() {
                     @Override
                     public void onPageSelected(int position) {
-                        getActionBar().setSelectedNavigationItem(position);
+                        getSupportActionBar().setSelectedNavigationItem(position);
                     }
                 });
         FragmentManager fm = getSupportFragmentManager();
         pagerAdapter = new MyFragmentPagerAdapter(fm);
         pager.setAdapter(pagerAdapter);
-        final ActionBar actionBar = getActionBar();
+        final ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-        ActionBar.TabListener tabListener = new ActionBar.TabListener() {
+        TabListener tabListener = new TabListener() {
 
 			@Override
 			public void onTabReselected(Tab arg0,
-					android.app.FragmentTransaction arg1) {    				
+					FragmentTransaction arg1) {    				
 			}
 
 			@Override
 			public void onTabSelected(Tab tab,
-					android.app.FragmentTransaction arg1) {
+					FragmentTransaction arg1) {
 	            pager.setCurrentItem(tab.getPosition());
 
 			}
 
 			@Override
 			public void onTabUnselected(Tab arg0,
-					android.app.FragmentTransaction arg1) {    				
+					FragmentTransaction arg1) {    				
 			}
         };
 
@@ -274,7 +276,7 @@ public class MainActivity extends FragmentActivity implements OnImageFragmentSel
     }
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    MenuInflater inflater = getMenuInflater();
+	    MenuInflater inflater = getSupportMenuInflater();
 	    inflater.inflate(R.menu.main, menu);
 	    return super.onCreateOptionsMenu(menu);
 	}

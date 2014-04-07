@@ -1,7 +1,5 @@
 package Tabs;
 
-import java.util.ArrayList;
-
 import ndis.tumblrapi.Constants;
 import row.LazyAdapterAssignsImageLayoutorTextLayoutBasedType;
 import row.VideoRow;
@@ -9,15 +7,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.ListFragment;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.app.SherlockListFragment;
  
-public class BaseFragment extends ListFragment{
+public class BaseFragment extends SherlockListFragment{
 	public interface EndlessScroller {
         public void onBottomReached(int position);
     }
